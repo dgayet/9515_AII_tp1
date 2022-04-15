@@ -2,7 +2,11 @@
 
 bool compareString(std::string string1, std::string string2);
 
-int findSubString(std::string ref, std::string target);
+void findSubString(std::string ref, std::string target);
+
+void printResults(int * arr, size_t len);
+
+int * appendValueToArray(int * og_arr, size_t len, int value);
 
 // we can use tolower, HAVE to have preconditions and postconditions
 int main(int argc, char * argv[]) {
@@ -20,13 +24,8 @@ int main(int argc, char * argv[]) {
     //c = compareString(ref_string, target_string);
     //std::cout << c << std::endl;
 
-    int index = findSubString(ref_string, target_string);
-    if (index == -1){
-        std::cout << "The target string has not been found" << std::endl;
-    }
-    else{
-        std::cout << "There is an ocurrence in the index: " << index << std::endl;
-    }
+    findSubString(ref_string, target_string);
+    return 0;
 }
 
 // Preconditions: 
@@ -48,33 +47,68 @@ bool compareString(std::string string1, std::string string2){
     return true;
 }
 
-int findSubString(std::string ref, std::string target){
-    size_t ref_len = ref.length();
-    size_t target_len = target.length();
-    size_t i, j; // for index
+void findSubString(std::string ref, std::string target){
+    size_t ref_len = ref.length(), target_len = target.length();
+    size_t i, j, n_matches=0; // for index
     size_t m = -1; // match index
     char ref_ch, target_ch;
+    int * index = NULL; // array with index of ocurrences
 
-    // three conditions for the for clause 
-
-
-    
-    for (i = 0, j=0; (i < ref_len) && (j < target_len) && (ref_len - m + 1 > target_len); i++){
+    for (i = 0, j=0; (i < ref_len) && (ref_len - m + 1 > target_len); i++){
         ref_ch = ref.at(i);
         target_ch = target.at(j);
         if (std::tolower(ref_ch) == std::tolower(target_ch)){
             if (j == 0)
-                m = i;
+                m = int(i);
             j++;
+            if (j == target_len){
+                n_matches++;
+                if (n_matches == 1){
+                    index = new int[1];
+                    index[0] = int(m);
+                }
+                else{
+                    int * aux = new int[n_matches];
+                    std::copy(index, index+n_matches, aux);
+                    aux[n_matches - 1] = int(m);
+                    delete[] index;
+                    index = aux;
+                }
+                j=0;
+            }
         }
         else if (ref.at(i) == target.at(0)){
-            m = i;
+            m = int(i);
             j = 1;
         }
+        else{
+            j = 0;
+        }
+    }
+    printResults(index, n_matches);
+
+}
+
+void printResults(int * arr, size_t len){
+    if (arr == NULL){
+        std::cout << "The target string has not been found" << std::endl;
+    }
+    else{
+        std::cout << "The ocurrences are at: ";
+        for (size_t i=0; i < len; i++){
+            std::cout << arr[i];
+            if (i < len - 1)
+                std::cout << ", ";
+        }
+        std::cout << std::endl;
     }
 
-    if (j == target_len)
-        return int(m);
-    else
-        return -1;
+}
+
+int * appendValueToArray(int * og_arr, size_t len, int value){
+    int * new_arr = new int[len + 1];
+    std::copy(og_arr, og_arr +len, new_arr);
+    new_arr[len - 1] = int(value);
+    delete og_arr;
+    return new_arr;
 }
