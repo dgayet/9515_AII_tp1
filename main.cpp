@@ -68,11 +68,8 @@ void findSubString(std::string ref, std::string target){
                     index[0] = int(m);
                 }
                 else{
-                    int * aux = new int[n_matches];
-                    std::copy(index, index+n_matches, aux);
-                    aux[n_matches - 1] = int(m);
-                    delete[] index;
-                    index = aux;
+                    index = appendValueToArray(index, n_matches - 1, int(m));
+                    // aca puedo perder memoria
                 }
                 j=0;
             }
@@ -85,8 +82,8 @@ void findSubString(std::string ref, std::string target){
             j = 0;
         }
     }
-    printResults(index, n_matches);
 
+    printResults(index, n_matches);
 }
 
 void printResults(int * arr, size_t len){
@@ -108,7 +105,7 @@ void printResults(int * arr, size_t len){
 int * appendValueToArray(int * og_arr, size_t len, int value){
     int * new_arr = new int[len + 1];
     std::copy(og_arr, og_arr +len, new_arr);
-    new_arr[len - 1] = int(value);
-    delete og_arr;
+    new_arr[len] = int(value);
+    delete og_arr; // signfica algo hacer esto aca??
     return new_arr;
 }
