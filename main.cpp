@@ -55,6 +55,7 @@ void findSubString(std::string ref, std::string target){
     int * index = NULL; // array with index of ocurrences
 
     for (i = 0, j=0; (i < ref_len) && (ref_len - m + 1 > target_len); i++){
+        // falta tratar acentos diactriticos
         ref_ch = ref.at(i);
         target_ch = target.at(j);
         if (std::tolower(ref_ch) == std::tolower(target_ch)){
