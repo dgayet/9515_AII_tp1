@@ -49,10 +49,10 @@ bool compareString(std::string string1, std::string string2){
 
 void findSubString(std::string ref, std::string target){
     size_t ref_len = ref.length(), target_len = target.length();
-    size_t i, j, n_matches=0; // for index
-    size_t m = -1; // match index
+    size_t i, j, n_matches=0; // index for reference and target, number of matches
+    int m = -1; // match index
     char ref_ch, target_ch;
-    int * index = NULL; // array with index of ocurrences
+    int * index = NULL; // array with index of matches
 
     for (i = 0, j=0; (i < ref_len) && (ref_len - m + 1 > target_len); i++){
         // falta tratar acentos diactriticos
@@ -64,27 +64,16 @@ void findSubString(std::string ref, std::string target){
             j++;
             if (j == target_len){
                 n_matches++;
-                if (n_matches == 1){
-                    index = new int[1];
-                    index[0] = int(m);
-                }
-                else{
-                    index = appendValueToArray(index, n_matches - 1, int(m));
-                    // aca puedo perder memoria
-                }
+                index = appendValueToArray(index, n_matches - 1, int(m)); // aca puedo perder memoria
                 j=0;
             }
         }
-        else if (ref.at(i) == target.at(0)){
-            m = int(i);
-            j = 1;
-        }
-        else{
+        else
             j = 0;
-        }
     }
 
     printResults(index, n_matches);
+    delete[] index;
 }
 
 void printResults(int * arr, size_t len){
@@ -100,13 +89,12 @@ void printResults(int * arr, size_t len){
         }
         std::cout << std::endl;
     }
-
 }
 
 int * appendValueToArray(int * og_arr, size_t len, int value){
     int * new_arr = new int[len + 1];
     std::copy(og_arr, og_arr +len, new_arr);
     new_arr[len] = int(value);
-    delete og_arr; // signfica algo hacer esto aca??
+    delete[] og_arr; // esto esta efectivamente borrando?
     return new_arr;
 }
